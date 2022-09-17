@@ -18,33 +18,48 @@ class Customer(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=1000)
 
     def __str__(self):
         return self.name
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return self.name
+
+
+class Brand(models.Model):
+    name = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return self.name
+
+
+class Silhouette(models.Model):
+    name = models.CharField(max_length=1000)
 
     def __str__(self):
         return self.name
 
 
 class Good(models.Model):
-    name = models.CharField(max_length=100)
-    brand = models.CharField(max_length=100)
+    name = models.CharField(max_length=1000)
+    brand = models.ForeignKey('core.Brand', on_delete=models.CASCADE, blank=True, null=True)
     price = models.PositiveIntegerField()
-    img = models.ImageField(blank=True, null=True)
+    image_url = models.URLField(default='https://www.zalando.dk/solid-poloshirt-panos-poloshirts-med-grey-melange-so422p00k-c12.html')
     link = models.URLField(default='https://www.google.com/')
+    silhouette = models.ForeignKey('core.Silhouette', on_delete=models.CASCADE, blank=True, null=True)
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
     tags = models.ManyToManyField('core.Tag', blank=True)
     promoted = models.BooleanField(default=False)
 
-    @property
-    def image_url(self):
-        return BASE_URL + '/media/' + str(self.image)
+    # @property
+    # def image_url(self):
+    #     return BASE_URL + '/media/' + str(self.image)
 
     def __str__(self):
         return self.name

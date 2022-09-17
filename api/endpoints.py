@@ -10,4 +10,5 @@ api_urls = [
     path('like', Like.as_view(), name='like'),
     path('dislike', Dislike.as_view(), name='dislike'),
     path('getFavourites', GetFavourites.as_view(), name='getFavourites'),
+    path('parse', Parse.as_view(), name='parse'),
 ]

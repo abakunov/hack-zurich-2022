@@ -9,6 +9,10 @@ from core.models import *
 from .serializers import *
 from hackzurich.settings import BASE_URL
 
+import requests
+import re
+from core.parser_config import *
+
 
 class CreateCustomer(views.APIView):
     permission_classes = [AllowAny]
@@ -45,6 +49,7 @@ class GetFeed(views.APIView):
 
             serialized_goods = GoodSerializer(goods, many=True).data
             for elem in serialized_goods:
+                elem['brand'] = Brand.objects.get(id=elem['brand']).name
                 elem['category'] = category.name
                 elem_tags = []
                 for tag in elem['tags']:
@@ -106,6 +111,7 @@ class GetFavourites(views.APIView):
             goods = customer.favourites.all()
             serialized_goods = GoodSerializer(goods, many=True).data
             for elem in serialized_goods:
+                elem['brand'] = Brand.objects.get(id=elem['brand']).name
                 elem['category'] = Category.objects.get(id=elem['category']).name
                 elem_tags = []
                 for tag in elem['tags']:
@@ -118,3 +124,27 @@ class GetFavourites(views.APIView):
             return Response({'status': 'Bad Request'}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class Parse(views.APIView):
+    permission_classes = [AllowAny]
+    def get(self, request):
+        try:
+            response = requests.post('https://www.zalando.dk/api/graphql/', cookies=cookies, headers=headers, json=json_data).json()
+            for good in response:
+                try:
+                    name = good['data']['product']['name']
+                    brand = good['data']['product']['brand']['name']
+                    image_url = re.findall("(.*\.jpg).*", good['data']['product']['largeDefaultMedia']['uri'])[0]
+                    link = good['data']['product']['uri']
+                    price = int(good['data']['product']['displayPrice']['original']['formatted'][:-6])
+                    silhouette = good['data']['product']['silhouette']
+
+                    brand = Brand.objects.get_or_create(name=brand)[0]
+                    silhouette = Silhouette.objects.get_or_create(name=silhouette)[0]
+                    category = Category.objects.get_or_create(name='clothes')[0]
+
+                    good = Good.objects.get_or_create(name=name, brand=brand, image_url=image_url, link=link, price=price, silhouette=silhouette, category=category)[0]
+                except Exception as e:
+                    print(e)
+            return Response({'status': 'OK'}, status=status.HTTP_200_OK)
+        except Exception:
+            return Response({'status': 'Bad Request'}, status=status.HTTP_400_BAD_REQUEST)
