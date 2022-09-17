@@ -128,7 +128,7 @@ class Parse(views.APIView):
     permission_classes = [AllowAny]
     def get(self, request):
         try:
-            response = requests.post('https://www.zalando.dk/api/graphql/', cookies=cookies, headers=headers, json=json_data).json()
+            # response = requests.post('https://www.zalando.dk/api/graphql/', cookies=cookies, headers=headers, json=json_data).json()
             for good in response:
                 try:
                     name = good['data']['product']['name']
