@@ -31,14 +31,19 @@ class GetFeed(views.APIView):
     def get(self, request):
         try:
             uid = request.GET['uid']
-            tags = request.GET['tags']
+            tags = request.GET['tags'].split(' ')
             category = request.GET['category']
 
             customer = Customer.objects.get(uid=uid)
-            tags = Tag.objects.filter(name__in=tags.split(','))
+            print(tags)
+            tags = Tag.objects.filter(name__in=tags)
             category = Category.objects.get(name=category)
 
-            goods = Good.objects.filter(category=category, tags__in=tags)[:7]
+            if len(tags) > 0:
+                goods = Good.objects.filter(category=category, tags__in=tags)[:7]
+            else:
+                goods = Good.objects.filter(category=category)[:7]
+                
             serialized_goods = GoodSerializer(goods, many=True).data
             for elem in serialized_goods:
                 elem['category'] = category.name

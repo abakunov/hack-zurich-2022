@@ -8,6 +8,7 @@ class Customer(models.Model):
     GENDER_CATEGORIES = [
         ('m', 'Мужской'),
         ('f', 'Женский'),
+        ('о', 'Другое'),
     ]
     gender = models.CharField(max_length=1, choices = GENDER_CATEGORIES, default='m')
     favourites = models.ManyToManyField('core.Good', related_name='favourites', blank=True)
