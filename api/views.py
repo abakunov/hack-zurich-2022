@@ -35,7 +35,6 @@ class GetFeed(views.APIView):
             category = request.GET['category']
 
             customer = Customer.objects.get(uid=uid)
-            print(tags)
             tags = Tag.objects.filter(name__in=tags)
             category = Category.objects.get(name=category)
 
@@ -43,7 +42,7 @@ class GetFeed(views.APIView):
                 goods = Good.objects.filter(category=category, tags__in=tags)[:7]
             else:
                 goods = Good.objects.filter(category=category)[:7]
-                
+
             serialized_goods = GoodSerializer(goods, many=True).data
             for elem in serialized_goods:
                 elem['category'] = category.name

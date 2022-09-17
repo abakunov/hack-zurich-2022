@@ -10,7 +10,7 @@ class Customer(models.Model):
         ('f', 'Женский'),
         ('о', 'Другое'),
     ]
-    gender = models.CharField(max_length=1, choices = GENDER_CATEGORIES, default='m')
+    gender = models.CharField(max_length=1, choices = GENDER_CATEGORIES, default='o')
     favourites = models.ManyToManyField('core.Good', related_name='favourites', blank=True)
 
     def __str__(self):
@@ -40,6 +40,7 @@ class Good(models.Model):
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
     tags = models.ManyToManyField('core.Tag', blank=True)
+    promoted = models.BooleanField(default=False)
 
     @property
     def image_url(self):
