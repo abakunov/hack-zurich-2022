@@ -24,11 +24,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class GoodSerializer(serializers.ModelSerializer):
-    image_url = serializers.SerializerMethodField()
-
     class Meta:
         model = Good
-        exclude = ['img']
-
-    def get_image_url(self, obj):
-        return BASE_URL + '/media/' + str(obj.img)
+        fields = '__all__'

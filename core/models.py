@@ -52,6 +52,7 @@ class Good(models.Model):
     image_url = models.URLField(default='https://www.zalando.dk/solid-poloshirt-panos-poloshirts-med-grey-melange-so422p00k-c12.html')
     link = models.URLField(default='https://www.google.com/')
     silhouette = models.ForeignKey('core.Silhouette', on_delete=models.CASCADE, blank=True, null=True)
+    # sex
 
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
     tags = models.ManyToManyField('core.Tag', blank=True)

@@ -43,9 +43,9 @@ class GetFeed(views.APIView):
             category = Category.objects.get(name=category)
 
             if len(tags) > 0:
-                goods = Good.objects.filter(category=category, tags__in=tags)[:7]
+                goods = Good.objects.filter(category=category, tags__in=tags).order_by('id')[:7]
             else:
-                goods = Good.objects.filter(category=category)[:7]
+                goods = Good.objects.filter(category=category).order_by('id')[:7]
 
             serialized_goods = GoodSerializer(goods, many=True).data
             for elem in serialized_goods:
